@@ -3,7 +3,7 @@ import numpy as np
 # Función para crear vectores desplazados
 def crear_vectores_desplazados(vector, num_retrasos):
     vectores = []
-    n = len(vector)
+    n = len(vector)-1
     
     for i in range(num_retrasos):
         # Desplazar el vector hacia atrás
@@ -38,22 +38,23 @@ x = np.copy(Escalon_normalizado_data)
 y = np.copy(Salida_normalizado_data)
 
 # Número de retrasos
-kr = 6
+kr = 5
 
 # Crear vectores desplazados
 vectores_desplazados_Escalon = crear_vectores_desplazados(x, kr)
 vectores_desplazados_Salida = crear_vectores_desplazados(y, kr)
 
+# Imprimir las formas de los vectores desplazados
+print((vectores_desplazados_Escalon[0]).shape)
+print((vectores_desplazados_Salida[0]).shape)
+print((y[kr:].shape))
+print((vectores_desplazados_Escalon))
+print((vectores_desplazados_Salida))
+print((y[kr:]))
 
 # Crear archivo .txt con los vectores desplazados
 filename='vectores_desplazados.txt'
-data = np.vstack((vectores_desplazados_Escalon,vectores_desplazados_Salida)).T
-top = 'U-2, U-1, U-n     Y-2, Y-1, Y-n'
+data = np.vstack((vectores_desplazados_Escalon,vectores_desplazados_Salida,y[kr:])).T
+#organizo el top
+top = 'U-2, U-1,..................,U-n     Y-2, Y-1,................,Y-n,.................Yk'
 np.savetxt(filename, data, delimiter=',', header=top, comments='')
-
-
-# # Mostrar los resultados
-# for idx, vec in enumerate(vectores_desplazados):
-#     print(f"Vector desplazado {idx+1}: {vec}")
-
-
