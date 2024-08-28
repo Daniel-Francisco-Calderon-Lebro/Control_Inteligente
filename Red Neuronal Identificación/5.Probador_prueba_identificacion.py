@@ -27,12 +27,16 @@ scores = model.evaluate(X, y)
 # Mostramos las predicciones
 predictions = model.predict(X)
 
+
+##############################importante agregar el valor maxima de las salidas normalizadas################################
 def desnormalizar(predicciones, min_val, max_val):
     return predicciones * (max_val - min_val) + min_val
 
 predictions = desnormalizar(predictions, 0, 5.999999326945357) # valores reales
 y = desnormalizar(y, 0, 5.999999326945357) # valores reales
 
+
+##############################################importante agregar el valor maxima de las salidas normalizadas################################
 
 # Graficar las predicciones frente a los valores reales
 plt.figure(figsize=(10, 6))
