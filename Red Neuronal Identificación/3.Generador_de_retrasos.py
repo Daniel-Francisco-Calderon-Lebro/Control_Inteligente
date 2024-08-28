@@ -1,5 +1,7 @@
 import numpy as np
 
+kr = 10 # Cantidad de retrasos a implementar
+
 # Función para crear vectores desplazados
 def crear_vectores_desplazados(vector, num_retrasos):
     vectores = []
@@ -38,7 +40,7 @@ x = np.copy(Escalon_normalizado_data)
 y = np.copy(Salida_normalizado_data)
 
 # Número de retrasos
-kr = 5
+
 
 # Crear vectores desplazados
 vectores_desplazados_Escalon = crear_vectores_desplazados(x, kr)

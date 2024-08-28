@@ -2,9 +2,9 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 u = 0
-k = 1.3
-tao =2
-delta = 0.1
+k = 1.2
+tao =1.5
+delta = 0.2
 t = 0
 z = []
 y = 0
