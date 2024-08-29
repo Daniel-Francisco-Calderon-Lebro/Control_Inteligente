@@ -11,7 +11,7 @@ def normalizar(vector):
     return vector, min_val, max_val  
 
 # Cargar el archivo .txt
-data = np.loadtxt(r'Red Neuronal Identificación\data.txt', delimiter=',', skiprows=1)
+data = np.loadtxt(r'Red Neuronal Identificación\Generador_red_MLP\data.txt', delimiter=',', skiprows=1)
 Tiempo_data = data[:, 0]
 Escalon_data = data[:, 1]
 Salida_data = data[:, 2]
