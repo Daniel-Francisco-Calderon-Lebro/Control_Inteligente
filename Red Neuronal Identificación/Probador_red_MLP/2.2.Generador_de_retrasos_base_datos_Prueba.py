@@ -1,6 +1,11 @@
 import numpy as np
+'''
+Cantidad de retrasos a implementar recordar que la red se
+entrena con un valor de k_n nuemro de retrasos
+'''
+kr = 2 
 
-kr = 2 # Cantidad de retrasos a implementar
+
 
 # Función para crear vectores desplazados
 def crear_vectores_desplazados(vector, num_retrasos):

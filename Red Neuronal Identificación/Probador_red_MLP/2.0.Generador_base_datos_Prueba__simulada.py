@@ -2,8 +2,12 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 #####OJOJOJojojojojojojojojojojojojojoj
-# Colocar los mismos valores con el cual se entreno la red
-# Pero cambiar los valores de u
+'''
+Colocar los mismos valores con el cual se entreno la red
+Pero cambiar los valores de u, los valores de u preferiblemente
+que esten al mismo rango el cual se entreno la red 
+'''
+
 u = 0
 k = 1.2
 tao =1.5
@@ -16,7 +20,7 @@ uu = []
 
 while t <= 2300:
 
-    if t >= 5:
+    if t >= 2:
         u = 3
     if t >= 100:
         u = 1
@@ -39,9 +43,9 @@ while t <= 2300:
     if t >= 1265:
         u = 4
     if t >= 1380:
-        u = 0
+        u = 15
     if t >= 1510:
-        u = 1
+        u = 12
     if t >= 1625:
         u = 3
     if t >= 1740:

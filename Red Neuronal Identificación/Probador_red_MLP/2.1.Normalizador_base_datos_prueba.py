@@ -1,10 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-def normalizar(vector):
-    min_val = np.min(vector)
-    max_val = np.max(vector)
-    
+def normalizar(vector, min_val=None, max_val=None):
     for i in range(len(vector)):
         vector[i] = (vector[i] - min_val) / (max_val - min_val)
     
@@ -17,9 +14,9 @@ Escalon_data = data[:, 1]
 Salida_data = data[:, 2]
 
 # Normalizar los datos
-tiempo_normalizado, min_tiempo, max_tiempo = normalizar(Tiempo_data)
-escalon_normalizado, min_escalon, max_escalon = normalizar(Escalon_data)
-salida_normalizado, min_salida, max_salida = normalizar(Salida_data)
+tiempo_normalizado, min_tiempo, max_tiempo = normalizar(Tiempo_data,0,1)#no tener en cuenta este valor no se usa
+escalon_normalizado, min_escalon, max_escalon = normalizar(Escalon_data,0,5) #cambiar este valor al maximo valor de la entrada normalizada de datos de entrenaamiento de la red
+salida_normalizado, min_salida, max_salida = normalizar(Salida_data,0,5.999999326945357)#cambiar este valor al maximo valor de la salida normalizada de datos de entrenaamiento de la red
 
 print(f"min_tiempo: {min_tiempo}, max_tiempo: {max_tiempo}")
 print(f"min_escalon: {min_escalon}, max_escalon: {max_escalon}")

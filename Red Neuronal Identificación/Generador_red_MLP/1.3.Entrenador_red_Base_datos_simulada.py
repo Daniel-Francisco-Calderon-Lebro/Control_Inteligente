@@ -21,7 +21,7 @@ print(data.shape)
 # Crear el modelo
 model = Sequential()
 model.add(Dense(2, input_dim=k*2, activation='relu'))
-model.add(Dense(1,activation='relu'))  # Sin activación para salida continua
+model.add(Dense(1,activation='relu'))
 
 model.compile(loss='mean_squared_error',
               optimizer='adam',

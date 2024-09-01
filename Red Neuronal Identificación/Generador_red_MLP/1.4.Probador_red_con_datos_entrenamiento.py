@@ -35,7 +35,7 @@ predictions = model.predict(X)
 def desnormalizar(predicciones, min_val, max_val):
     return predicciones * (max_val - min_val) + min_val
 
-valor_maximo = 6
+valor_maximo = 5.999999326945357
 predictions = desnormalizar(predictions, 0, valor_maximo) # valores reales
 y = desnormalizar(y, 0, valor_maximo) # valores reales
 
