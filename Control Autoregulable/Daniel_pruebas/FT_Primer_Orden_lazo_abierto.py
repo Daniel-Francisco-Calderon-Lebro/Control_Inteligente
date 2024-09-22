@@ -31,12 +31,15 @@ while t <= 180:
         u = 25
     if t >= 160:
         u = 0
-    
+    umax = 100
+    umin = 0
+    u = (u - umin) / (umax - umin)  # Normalización de la entrada
     # Ecuación de actualización de la salida del sistema
+    u = u - y
     y = ((((u * k) - y) * delta) / tao) + y
     
     # Ajuste de la entrada en función de la salida (lazo cerrado)
-    u = u - y
+    
 
     # Almacenar los valores para graficar
     uu.append(u)  # Entrada ajustada
