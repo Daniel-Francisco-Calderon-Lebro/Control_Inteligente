@@ -57,7 +57,6 @@ while t <= 150:
     # Cálculo de la salida del sistema de segundo orden en lazo cerrado
     u = u - y # Aquí es donde se realiza el ajuste de la entrada
     y = (1/A)*(B*u - C*y_ant1 - D*y_ant2)
-
     # Actualización de valores anteriores
     y_ant2 = y_ant1
     y_ant1 = y
