@@ -48,3 +48,5 @@ fig.show()
 
 # 10. Graficamos la red
 plot_model(model, to_file='XOR.png', show_shapes=True)
+
+
