@@ -14,28 +14,35 @@ A= (1/(delta_SO**(2)) + (zeta_SO*omega_n_SO)/delta_SO)
 B= (omega_n_SO**2)*k_Gs_SO
 C= omega_n_SO**2 - (2/(delta_SO**2))
 D= (1/(delta_SO**(2))) - ((zeta_SO*omega_n_SO)/delta_SO)
+#####################Fin Inicializacion Funcion de transferencia PO########################
 
-# Inicialización de listas para almacenar resultados
+
+######################## Inicialización de listas para almacenar resultados#########################
 z_SO_LS = []  # Salida del sistema (y)
 tt = []  # Tiempo
 uu = []  # Entrada (u)
 uuc = []  # Escalones de control
+########################Fin Inicialización de listas para almacenar resultados########################
 
 
-######################## Inicializacion Regulador Tecnologico ################################
+######################## Inicializacion Valores inciales Regulador Tecnologico MLP ################################
 # y = [0.0, 0.0]  # Salida de la planta [0:actual, 1:anterior]
 xe = [0.0, 0.0, 0.0, 0.0]  # Errores de entrada inicializados a cero
 sp = 100  # Escalones de entrada del sistema
-
+alfa1 = 1  # Tasa de aprendizaje dinámica (más baja para una convergencia más estable)
+nn = 1  # Otro parámetro de la tasa de aprendizaje dinámica
+alfa = 4  # Valor inicial de la tasa de aprendizaje (ajustable según el rendimiento)
 u = 0.0  # Inicialización de la variable de entrada
 uc = 0.0  # Inicialización de la variable de control
 y = 0.0  # Valor inicial de la salida
-##################### Terminacion Inicializacion Regulador Tecnologico ################################
+########################### Fin Inicializacion Valores inciales Regulador Tecnologico MLP ################################
+
+
 
 # Inicialización de pesos (valores pequeños y aleatorios suelen funcionar mejor)
 
-#cargamos los pesos iniciales desde un archivo csv
-# w = np.loadtxt('wSO.csv', delimiter=',', skiprows=1)
+# # #cargamos los pesos iniciales desde un archivo csv
+# w = np.loadtxt('w.csv', delimiter=',', skiprows=1)
 # we11 = w[0]
 # we21 = w[1]
 # we31 = w[2]
@@ -48,37 +55,41 @@ y = 0.0  # Valor inicial de la salida
 # v1 = w[9]
 # v2 = w[10]
 # v3 = w[11]
-# alfa = w[12]
-# alfa1 = w[13]
-# nn = w[14]
+we11 = we21 = we31 = we12 = we22 = we32 = we13 = we23 = we33 = 0.0
+v1 = 0.5
+v2 = 0.5
+v3 = 0
+# Valores iniciales de los pesos Funcionales
+# we11 =  -1.26
+# we21 = -2.08
+# we31 = -0.731
+# we12 = -0.7247
+# we22 = -1.74
+# we32 = -1.3048
+# we13 = -1.3986
+# we23 = -1.9877
+# we33 = -0.4436
+# v1 = -3.4989
+# v2 = -4.9677
+# v3 = -3.0176
+################################Terminacion Inicializacion Regulador Tecnologico################################
 
-we11 = -9.708699555616312482e-01
-we21 = -9.708699555616312482e-01
-we31 = 1.060639064916551466e-01
-we12 = -9.708699555616312482e-01
-we22 = -9.708699555616312482e-01
-we32 = 1.060639064916551466e-01
-we13 = -9.708699555616312482e-01
-we23 = -9.708699555616312482e-01
-we33 = 1.060639064916551466e-01
-v1 = -3.829066544911494230e+00
-v2 = -3.829066544911494230e+00
-v3 = -1.086481567129982118e+00
-alfa = 1.002214499801117098e+00
-alfa1 = 1.000000000000000056e-01
-nn = 1.000000000000000000e+00
+
+############################### Inicio Funciones creadas ################################
+# Normnalizacion de una variable
+def normalizar(x, xmin, xmax):
+    return (x - xmin) / (xmax - xmin)
+
+# Desnormalizacion de una variable
+def desnormalizar(x, xmin, xmax):
+    return x * (xmax - xmin) + xmin
+############################ Fin Funciones creadas ################################
 
 
-# we11 = we21 = we31 = we12 = we22 = we32 = we13 = we23 = we33 = 0.0
-# v1 = v2 = -2.0
-# v3 = 0.0
-# alfa1 = 0.1 # parámetro de la rata de aprendizaje dinámica
-# nn = 1 # parámetro de la rata de aprendizaje dinámica
-# alfa = 0.2 # valor inicial de la rata de aprendizaje dinámica
-
+############################# Inicio Programa ###########################
 while t <= 10000:
     if t >= 500:
-        u = 40
+        u = 2
     if t >= 1500:
         u = 80   
     if t >= 2500:
@@ -106,29 +117,25 @@ while t <= 10000:
     # if t >= 8000:
     #     u = 0
 
+
+########################### Actualizacion de la Entrada del sistema ###########################
     u1 = u
-    # Cálculo de la salida del sistema de segundo orden en lazo abierto
-    y = (1/A)*(B*uc - C*y_ant1 - D*y_ant2)
-    # Actualización de valores anteriores
-    y_ant2 = y_ant1
-    y_ant1 = y
-    # Desnormalizar y
-    ymax = 100
-    ymin = 0
-    y1 = y * (ymax - ymin) + ymin
-    # normalizar u
     umax = 100
     umin = 0
-    u = (u - umin) / (umax - umin) # Normalización de la entrada este es el sp
-    
-    # Cálculo del error
+    u = normalizar(u, umin, umax)  # Normalización de la entrada este es el sp
+######################## Fin Actualizacion de la Entrada del sistema ###########################
+
+
+############################ Cálculo del error ################################
     ey = u - y #cálculo del error actual
-    # Errores dezplazados
     xe[1] = ey  # Error actual e(t)          xe1 = xe[1]
     xe[2] = xe[1]  # Error anterior e(t-1)      xe2 = xe[2]
     xe[3] = xe[2]  # Error trasanterior e(t-2)  xe3 = xe[3]
+############################ Fin Cálculo del error################################# 
+   
 
-    # Cálculo de la capa oculta
+
+################################ Cálculo de capa oculta#################################
     he1 = (we11 * xe[1]) + (we21 * xe[2]) + (we31 * xe[3])
     he1 = 1 / (1 + math.exp(-he1))
     he2 = (we12 * xe[1]) + (we22 * xe[2]) + (we32 * xe[3])
@@ -137,8 +144,18 @@ while t <= 10000:
     he3 = 1 / (1 + math.exp(-he3))
     # Cálculo de la salida
     uc = (v1 * he1) + (v2 * he2) + (v3 * he3)
-    uc = 1 / (1 + math.exp(-uc))
+    uc = 1 / (1 + math.exp(-uc*0.8+5))
+#################################Fin Cálculo de capa oculta##############################
 
+
+
+################################ Desnormalizacion de la variable de control ################
+    uc1 = uc
+    umax = 100
+    umin = 0
+    uc1 = uc1 * (umax - umin) + umin
+############################# Fin Desnormalizacion de la variable de control ################
+ 
 
     # #u = ((u - 0.5) * 2)*1
     # # u = (math.exp(u1) - math.exp(-u1)) / (math.exp(u1) + math.exp(-u1)) #tanh(u)
@@ -151,7 +168,20 @@ while t <= 10000:
     # #     ey=100
     # # if ey<0:
     # #     ey=0
+################################ Fin Cálculo de capa oculta##############################
 
+
+########################### Ecuación de actualización de la salida del sistema en lazo cerrado
+    y = (1/A)*(B*uc - C*y_ant1 - D*y_ant2)
+    y_ant2 = y_ant1
+    y_ant1 = y
+    ymax = 100
+    ymin = 0
+    y1 = y * (ymax - ymin) + ymin
+########################## Fin Ecuación de actualización de la salida del sistema en lazo cerrado
+
+
+############################### Inicio Actualización de los pesos y Alfa ################################
     # Cálculo de S
     s = ey * uc * (1 - uc)  # uc / (math.sinh(u1) * math.sinh(u1))
     # Actualización de pesos de salida V
@@ -178,28 +208,17 @@ while t <= 10000:
     we33 = we33 + (alfa * s3 * xe[3])
 
     alfa = nn + (alfa1 * abs(ey))
-    # alfa = 0.5
 
-    alfa = alfa
-    print(ey)
-
-############################Respuesta del sistema ################################
-    uc1 = uc
-    # desnormalizar uc
-    umax = 100
-    umin = 0
-    uc1 = uc1 * (umax - umin) + umin
-    
-
+################################ Fin Actualización de los pesos y Alfa ################################
+    # Incremento del tiempo
+    t += 1  
     # Almacenar los valores para graficar
     uuc.append(uc1)  # Entrada ajustada
     uu.append(u1)  # Entrada sin ajuste
     z_SO_LS.append(y1)   # Salida del sistema
     tt.append(t)  # Tiempo
-    # Incremento del tiempo
-    t += 1
-
 ############################Terminacion Respuesta del sistema ################################
+
 
 
 #############################Gráfica de la salida normalizada############################
@@ -208,7 +227,7 @@ while t <= 10000:
 # Grafica de la salida sin normalizar
 plt.plot(tt, z_SO_LS, color="blue", label="Salida (y) Lazo Cerrado SO")
 plt.plot(tt, uu, color="red", label="Entrada (u) SP")
-plt.plot(tt, uuc, color="green", label="Escalones de Control (uc)")
+plt.plot(tt, uuc, color="green", label="Entrada (u) Señal de Control")
 plt.title("Respuesta del Sistema")
 plt.xlabel("Tiempo")
 plt.ylabel("Salida (y) Normalizada")

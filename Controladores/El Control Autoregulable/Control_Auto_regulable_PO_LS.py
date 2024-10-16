@@ -30,6 +30,8 @@ alfa = 4  # Valor inicial de la tasa de aprendizaje (ajustable según el rendimi
 u = 0.0  # Inicialización de la variable de entrada
 uc = 0.0  # Inicialización de la variable de control
 y = 0.0  # Valor inicial de la salida
+########################### Fin Inicializacion Valores inciales Regulador Tecnologico MLP ################################
+
 
 # Inicialización de pesos (valores pequeños y aleatorios suelen funcionar mejor)
 
@@ -77,6 +79,7 @@ def desnormalizar(x, xmin, xmax):
     return x * (xmax - xmin) + xmin
 ############################ Fin Funciones creadas ################################
 
+
 ############################# Inicio Programa ###########################
 # Simulación hasta t = 180
 while t <= 20000:
@@ -122,6 +125,9 @@ while t <= 20000:
     # Cálculo de la salida
     uc = (v1 * he1) + (v2 * he2) + (v3 * he3)
     uc = 1 / (1 + math.exp(-uc*0.8+5))
+#################################Fin Cálculo de capa oculta##############################
+
+
     
 ################################ Desnormalizacion de la variable de control ################
     ucmax = 100
@@ -131,10 +137,10 @@ while t <= 20000:
     # #u = ((u - 0.5) * 2)*1
     # # u = (math.exp(u1) - math.exp(-u1)) / (math.exp(u1) + math.exp(-u1)) #tanh(u)
     # #u=sp/100
-    # if uc > 1.0:
-    #     uc = 1.0
-    # elif uc < 0:
-    #     uc = 0.0
+    if uc > 1.0:
+        uc = 1.0
+    elif uc < 0:
+        uc = 0.0
     # # if ey>100:
     # #     ey=100
     # # if ey<0:
@@ -180,16 +186,13 @@ while t <= 20000:
     alfa = nn + (alfa1 * abs(ey))
 
 ################################ Fin Actualización de los pesos y Alfa ################################
-
     # Incremento del tiempo
     t += 1
-    ############################Respuesta del sistema ################################
-    # Almacenar los valores para graficar
+   # Almacenar los valores para graficar
     uuc.append(uc1)  # Entrada ajustada
     uu.append(u1)  # Entrada sin ajuste
     z_PO_LS.append(y1)   # Salida del sistema
     tt.append(t)  # Tiempo
-    
 ############################ Fin  while ###########################
 
 
